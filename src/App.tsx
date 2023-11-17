@@ -1,18 +1,15 @@
 import { useState, useEffect } from "react";
+import { Variant, motion, useAnimationControls } from "framer-motion";
 import {
-	Variant,
-	motion,
-	useAnimationControls,
-} from "framer-motion";
-import { Section1, Section2, Section3, Loading } from "@/components";
-import {
-	DISCORD_ICON,
-	OPENSEA_ICON,
-	TWITTER_ICON,
-	WALKING_BOY,
-} from "@/assets";
+	Section1,
+	Section2,
+	Section3,
+	Loading,
+	SocialLinks,
+} from "@/components";
+import { WALKING_BOY } from "@/assets";
 
-const sections = [
+const sections: SectionType[] = [
 	{ id: 1, color: "", element: <Section1 /> },
 	{ id: 2, color: "", element: <Section2 /> },
 	{ id: 3, color: "", element: <Section3 /> },
@@ -25,6 +22,24 @@ const App = () => {
 	const imageDivControls = useAnimationControls();
 	const imageControls = useAnimationControls();
 	const [scrollY, setScrollY] = useState(0);
+	const [screenSize, getDimension] = useState({
+		dynamicWidth: window.innerWidth,
+		dynamicHeight: window.innerHeight,
+	});
+
+	const setDimension = () => {
+		getDimension({
+			dynamicWidth: window.innerWidth,
+			dynamicHeight: window.innerHeight,
+		});
+	};
+
+	useEffect(() => {
+		window.addEventListener("resize", setDimension);
+		return () => {
+			window.removeEventListener("resize", setDimension);
+		};
+	}, [screenSize]);
 
 	useEffect(() => {
 		const loadingTimeout = setTimeout(() => {
@@ -50,7 +65,12 @@ const App = () => {
 		});
 
 		imageControls.start({
-			y: currentSection === 0 ? [230, 200] : 0,
+			y:
+				currentSection === 0
+					? screenSize.dynamicWidth < 421
+						? [140, 120]
+						: [230, 200]
+					: 0,
 			transition: {
 				ease: "linear",
 				duration: 0.8,
@@ -58,7 +78,13 @@ const App = () => {
 				repeatType: "reverse",
 			},
 		} as Variant);
-	}, [currentSection, sectionControls, imageDivControls, imageControls]);
+	}, [
+		currentSection,
+		sectionControls,
+		imageDivControls,
+		imageControls,
+		screenSize,
+	]);
 
 	const handleScroll = (e: any) => {
 		setScrollY((prev) => prev + e.deltaY);
@@ -128,35 +154,7 @@ const App = () => {
 					/>
 				</motion.div>
 			</div>
-			<div className="absolute md:bottom-9 md:left-10 bottom-5 left-6 flex justify-center gap-4">
-				<a href="https://discord.com/">
-					<img
-						className="hover:scale-90 transition-transform ease-in-out duration-300"
-						src={DISCORD_ICON}
-						height={40}
-						width={40}
-						alt="discord"
-					/>
-				</a>
-				<a href="https://opensea.io/">
-					<img
-						className="hover:scale-90 transition-transform ease-in-out duration-300"
-						src={OPENSEA_ICON}
-						height={40}
-						width={40}
-						alt="opensea"
-					/>
-				</a>
-				<a href="https://twitter.com/">
-					<img
-						className="hover:scale-90 transition-transform ease-in-out duration-300"
-						src={TWITTER_ICON}
-						height={40}
-						width={40}
-						alt="twitter"
-					/>
-				</a>
-			</div>
+			<SocialLinks />
 		</>
 	);
 };
