@@ -50,8 +50,6 @@ const App = () => {
 	}, []);
 
 	useEffect(() => {
-		// imageDivControls.stop();
-		// imageControls.stop();
 		sectionControls.start({
 			y: -window.innerHeight * currentSection,
 			transition: { ease: "easeInOut", duration: 1 },
@@ -134,11 +132,6 @@ const App = () => {
 
 				<motion.div
 					className="img-container absolute top-1/2 left-1/2"
-					style={
-						{
-							// backgroundColor: "yellow",
-						}
-					}
 					animate={imageDivControls}
 				>
 					<motion.img
@@ -146,7 +139,6 @@ const App = () => {
 							width: "100%",
 							height: "100%",
 							objectFit: "cover",
-							// border: "2px solid black",
 						}}
 						src={WALKING_BOY}
 						alt="Girl"

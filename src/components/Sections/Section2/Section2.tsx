@@ -1,4 +1,4 @@
-import { motion, transform } from "framer-motion";
+import { motion } from "framer-motion";
 
 const Section2 = () => {
 	return (
@@ -13,7 +13,7 @@ const Section2 = () => {
 					transform: "translate(-50%, -50%)" 
 				}}
 			>
-				HIRE ME
+				CODIGO	
 			</motion.h1>
 		</div>
 	);
