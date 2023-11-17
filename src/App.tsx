@@ -85,12 +85,24 @@ const App = () => {
 	]);
 
 	const handleScroll = (e: any) => {
-		setScrollY((prev) => prev + e.deltaY);
+		let deltaY = 0;
+
+		if (e.type === "wheel") {
+			// For wheel events on non-mobile devices
+			deltaY = e.deltaY;
+		} else if (e.type === "touchmove") {
+			// For touch events on mobile devices
+			deltaY = e.touches[0].clientY - e.touches[0].clientYStart;
+		}
+
+		setScrollY((prev) => prev + deltaY);
+
 		// Check if half a circle of scrolling has occurred
 		const sectionsHeight = sections.length * window.innerHeight;
 		const halfCircleThreshold = sectionsHeight / 2;
+
 		if (Math.abs(scrollY) >= halfCircleThreshold) {
-			if (e.deltaY > 0) {
+			if (deltaY > 0) {
 				// Scrolling down
 				setCurrentSection((prev) => (prev + 1) % sections.length);
 			} else {
@@ -99,6 +111,7 @@ const App = () => {
 					(prev) => (prev - 1 + sections.length) % sections.length
 				);
 			}
+
 			// Reset scrollY to prevent continuous section changes
 			setScrollY(0);
 		}
@@ -109,6 +122,7 @@ const App = () => {
 			<div
 				className="overflow-hidden h-screen relative"
 				onWheel={(e) => handleScroll(e)}
+				onTouchMove={(e) => handleScroll(e)}
 			>
 				{/* Sections */}
 				<motion.div className="flex flex-col  h-full" animate={sectionControls}>
